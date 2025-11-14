@@ -1,6 +1,5 @@
 ###############################################################
 # Nutri-Bridge — Weekly Meal Planner with Pantry Mode
-# + REAL-TIME Kaggle Dataset Fetch (no file uploads needed)
 ###############################################################
 
 import streamlit as st
@@ -18,7 +17,7 @@ st.title("🥗 Nutri-Bridge — Weekly Nutrition Planner")
 
 
 ###############################################################
-# 🔐 Kaggle API Credentials (Put your key here OR inside .streamlit/secrets.toml)
+# Kaggle API Credentials
 ###############################################################
 
 # If running locally – put kaggle.json in ~/.kaggle/
@@ -27,7 +26,7 @@ os.environ["KAGGLE_KEY"] = "98008443e2a71475ee2fe25424da561c"
 
 
 ###############################################################
-# 🔄 REAL-TIME KAGGLE DATASET FETCHER
+# REAL-TIME KAGGLE DATASET FETCHER
 ###############################################################
 
 @st.cache_data(show_spinner=True)
@@ -48,7 +47,7 @@ df = load_kaggle_realtime()
 
 
 ###############################################################
-# 🧹 PREPROCESSING
+# PREPROCESSING
 ###############################################################
 
 def safe_list(v):
@@ -93,7 +92,7 @@ df["cost_est"] = 20
 
 
 ###############################################################
-# 🧍 USER INPUTS
+# USER INPUTS
 ###############################################################
 
 st.sidebar.header("User Profile")
@@ -112,7 +111,7 @@ restrictions = [normalize_ing(r) for r in st.sidebar.text_input(
     "Dietary restrictions", value="sugar"
 ).split(",")]
 
-# Pantry Mode 🧺
+# Pantry Mode 
 pantry_items = st.sidebar.text_area(
     "Pantry ingredients (comma separated)",
     placeholder="onion, rice, pasta"
@@ -158,7 +157,7 @@ def plan_day(day, df_filtered, used):
     prob += lpSum(x[k]*rec_map[k]["calories"] for k in x) <= CAL*(1+cal_tol)
     prob += lpSum(x[k]*rec_map[k]["protein_g"] for k in x) >= PRO*(1-pro_tol)
 
-    # ⭐ Pantry Mode Reward
+    # Pantry Mode Reward
     prob += lpSum(x[k] * pantry_score(rec_map[k]["ing_list"]) for k in x)
 
     prob.solve(PULP_CBC_CMD(msg=0))
@@ -173,7 +172,7 @@ def plan_day(day, df_filtered, used):
 
 
 ###############################################################
-# 🚀 GENERATE WEEKLY PLAN
+# GENERATE WEEKLY PLAN
 ###############################################################
 
 if st.button("GENERATE WEEKLY PLAN 🚀"):
@@ -235,7 +234,7 @@ if st.button("GENERATE WEEKLY PLAN 🚀"):
 
 
     ###############################################################
-    # 🛒 Shopping List
+    # Shopping List
     ###############################################################
 
     COST_MAP = {"produce":5,"dairy":10,"meat":30,"pantry":10,"other":8}
@@ -269,7 +268,7 @@ if st.button("GENERATE WEEKLY PLAN 🚀"):
 
 
     ###############################################################
-    # 📈 GRAPHS
+    # GRAPHS
     ###############################################################
 
     st.subheader("📈 Calories & Protein Trend")
@@ -347,5 +346,6 @@ if st.button("GENERATE WEEKLY PLAN 🚀"):
 
     fig2.tight_layout()
     st.pyplot(fig2)
+
 
 
